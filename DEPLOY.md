@@ -111,6 +111,34 @@ sudo nginx -t
 sudo systemctl reload nginx
 ```
 
+### Enable HTTPS (remove "Not secure")
+
+To serve the site over HTTPS so the browser shows a padlock and doesn’t say "Not secure":
+
+1. **Install Certbot (Let’s Encrypt):**
+
+```bash
+sudo apt update
+sudo apt install -y certbot python3-certbot-nginx
+```
+
+2. **Get a free SSL certificate and let Certbot configure Nginx:**
+
+```bash
+sudo certbot --nginx -d allminnesota.org -d www.allminnesota.org
+```
+
+Follow the prompts (email, agree to terms). Certbot will get the certificate and update your Nginx config to serve HTTPS and redirect HTTP to HTTPS.
+
+3. **Restart Nginx and test:**
+
+```bash
+sudo nginx -t
+sudo systemctl reload nginx
+```
+
+Then open **https://allminnesota.org** — it should show as secure. Certbot sets up auto-renewal; you can test it with `sudo certbot renew --dry-run`.
+
 ## 2. Future deploys (after code changes)
 
 Deploy as the app user so you’re not using root:

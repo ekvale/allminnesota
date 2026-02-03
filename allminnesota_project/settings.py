@@ -102,3 +102,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Login redirect for dashboard
 LOGIN_URL = '/admin/login/'
 LOGIN_REDIRECT_URL = '/dashboard/'
+
+# When behind Nginx with HTTPS, trust X-Forwarded-Proto so Django sees requests as secure
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
