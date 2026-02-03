@@ -53,13 +53,16 @@ class AboutView(TemplateView):
 
 
 class EventsView(ListView):
-    """List all published events ordered by date."""
+    """List upcoming published events (date >= now) ordered by date."""
     model = Event
     template_name = 'core/events/list.html'
     context_object_name = 'events'
 
     def get_queryset(self):
-        return Event.objects.filter(is_published=True).order_by('date')
+        return Event.objects.filter(
+            is_published=True,
+            date__gte=timezone.now(),
+        ).order_by('date')
 
 
 class EventDetailView(DetailView):

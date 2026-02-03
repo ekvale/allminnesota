@@ -78,4 +78,10 @@ class Command(BaseCommand):
             event.save(update_fields=['is_published'])
             self.stdout.write(self.style.SUCCESS('Published event so it appears on the Events page.'))
 
+        # Ensure event date is timezone-aware so it shows in "upcoming" (date__gte=now) queries
+        if getattr(event.date, 'tzinfo', None) is None:
+            event.date = timezone.make_aware(event.date)
+            event.save(update_fields=['date'])
+            self.stdout.write(self.style.SUCCESS('Fixed event date to be timezone-aware.'))
+
         self.stdout.write(self.style.SUCCESS('Done.'))
