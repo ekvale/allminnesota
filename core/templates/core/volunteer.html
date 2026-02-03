@@ -7,6 +7,13 @@
     <h1 class="text-primary-green mb-4">Sign Up to Volunteer</h1>
     <p class="lead text-dark mb-4">Join our community and help distribute meals across Minnesota.</p>
 
+    {% if request.GET.submitted %}
+    <div class="alert alert-success mb-4" role="alert">
+        <h2 class="h5 alert-heading mb-2">Thank you!</h2>
+        <p class="mb-0">Your volunteer sign-up went through. We've received your information and will be in touch soon.</p>
+    </div>
+    {% endif %}
+
     <div class="row">
         <div class="col-lg-8">
             <form method="post" action="{% url 'core:volunteer' %}" class="needs-validation" novalidate>

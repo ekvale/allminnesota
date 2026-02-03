@@ -107,8 +107,8 @@ class VolunteerView(FormView):
         form = VolunteerForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Thank you! Your volunteer sign-up was received.')
-            return redirect('core:volunteer')
+            messages.success(request, 'Thank you for signing up to volunteer! We\'ve received your information and will be in touch.')
+            return redirect(reverse('core:volunteer') + '?submitted=1')
         return render(request, self.template_name, {'form': form})
 
 
