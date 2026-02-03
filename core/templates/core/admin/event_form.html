@@ -1,0 +1,64 @@
+{% extends 'core/base.html' %}
+
+{% block title %}{% if object %}Edit Event{% else %}Create Event{% endif %} — All Minnesota{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="text-primary-green mb-4">{% if object %}Edit Event{% else %}Create Event{% endif %}</h1>
+
+    <form method="post" action="" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="row g-3">
+            <div class="col-12">
+                <label for="id_title" class="form-label">Title</label>
+                {{ form.title }}
+                {% if form.title.errors %}<div class="invalid-feedback d-block">{{ form.title.errors.0 }}</div>{% endif %}
+            </div>
+            <div class="col-md-6">
+                <label for="id_date" class="form-label">Date &amp; time</label>
+                {{ form.date }}
+                {% if form.date.errors %}<div class="invalid-feedback d-block">{{ form.date.errors.0 }}</div>{% endif %}
+            </div>
+            <div class="col-12">
+                <label for="id_venue_name" class="form-label">Venue name</label>
+                {{ form.venue_name }}
+                {% if form.venue_name.errors %}<div class="invalid-feedback d-block">{{ form.venue_name.errors.0 }}</div>{% endif %}
+            </div>
+            <div class="col-12">
+                <label for="id_venue_address" class="form-label">Venue address</label>
+                {{ form.venue_address }}
+                {% if form.venue_address.errors %}<div class="invalid-feedback d-block">{{ form.venue_address.errors.0 }}</div>{% endif %}
+            </div>
+            <div class="col-12">
+                <label for="id_city_state" class="form-label">City, State</label>
+                {{ form.city_state }}
+                {% if form.city_state.errors %}<div class="invalid-feedback d-block">{{ form.city_state.errors.0 }}</div>{% endif %}
+            </div>
+            <div class="col-12">
+                <label for="id_description" class="form-label">Description</label>
+                {{ form.description }}
+                {% if form.description.errors %}<div class="invalid-feedback d-block">{{ form.description.errors.0 }}</div>{% endif %}
+            </div>
+            <div class="col-12">
+                <label for="id_ticket_url" class="form-label">Ticket URL (external)</label>
+                {{ form.ticket_url }}
+            </div>
+            <div class="col-12">
+                <label for="id_image" class="form-label">Image</label>
+                {{ form.image }}
+                {% if object and object.image %}<p class="small text-muted mt-1">Current: <a href="{{ object.image.url }}" target="_blank">{{ object.image.name }}</a></p>{% endif %}
+            </div>
+            <div class="col-12">
+                <div class="form-check">
+                    {{ form.is_published }}
+                    <label class="form-check-label" for="id_is_published">Published (visible on public site)</label>
+                </div>
+            </div>
+            <div class="col-12">
+                <button type="submit" class="btn btn-gold">{% if object %}Update{% else %}Create{% endif %} Event</button>
+                <a href="{% url 'core:dashboard' %}" class="btn btn-outline-secondary ms-2">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

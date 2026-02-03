@@ -1,0 +1,47 @@
+{% extends 'core/base.html' %}
+
+{% block title %}How It Works — All Minnesota{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="text-primary-green text-center mb-5">How It Works</h1>
+    <div class="row g-4">
+        <div class="col-md-6 col-lg-3 text-center">
+            <div class="p-4 rounded bg-light-custom h-100">
+                <i class="fas fa-heart fa-3x text-gold mb-3"></i>
+                <h3 class="h5 text-primary-green">Step 1</h3>
+                <h4 class="h6 mb-2">You Donate</h4>
+                <p class="small text-dark mb-0">Your generous support helps fund meals and operations for our community distribution program.</p>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3 text-center">
+            <div class="p-4 rounded bg-light-custom h-100">
+                <i class="fas fa-exchange-alt fa-3x text-gold mb-3"></i>
+                <h3 class="h5 text-primary-green">Step 2</h3>
+                <h4 class="h6 mb-2">Funds Match</h4>
+                <p class="small text-dark mb-0">Donations are matched with community needs and partner capacity to maximize impact.</p>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3 text-center">
+            <div class="p-4 rounded bg-light-custom h-100">
+                <i class="fas fa-utensils fa-3x text-gold mb-3"></i>
+                <h3 class="h5 text-primary-green">Step 3</h3>
+                <h4 class="h6 mb-2">Meals Prepared</h4>
+                <p class="small text-dark mb-0">Indigenous Food Lab and partners prepare nourishing, culturally rooted meals.</p>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3 text-center">
+            <div class="p-4 rounded bg-light-custom h-100">
+                <i class="fas fa-truck fa-3x text-gold mb-3"></i>
+                <h3 class="h5 text-primary-green">Step 4</h3>
+                <h4 class="h6 mb-2">Delivered to You</h4>
+                <p class="small text-dark mb-0">Meals are distributed to community members through our volunteer network.</p>
+            </div>
+        </div>
+    </div>
+    <p class="text-center mt-5">
+        <a href="#DONATE_PLACEHOLDER" target="_blank" class="btn btn-gold">Donate Now</a>
+        <a href="{% url 'core:volunteer' %}" class="btn btn-outline-primary-green ms-2">Volunteer</a>
+    </p>
+</div>
+{% endblock %}

@@ -1,0 +1,22 @@
+# Systemd unit for All Minnesota (Gunicorn)
+# Place in /etc/systemd/system/gunicorn-allminnesota.service
+# Edit User and WorkingDirectory if your app lives elsewhere.
+
+[Unit]
+Description=Gunicorn for All Minnesota Django app
+After=network.target
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/allminnesota
+Environment="PATH=/var/www/allminnesota/venv/bin"
+ExecStart=/var/www/allminnesota/venv/bin/gunicorn \
+    --workers 3 \
+    --bind 127.0.0.1:8000 \
+    allminnesota_project.wsgi:application
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,11 @@
+#!/bin/bash
+# Run from /var/www/allminnesota after cloning. Updates code and restarts Gunicorn.
+set -e
+cd /var/www/allminnesota
+git pull
+source venv/bin/activate
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py collectstatic --noinput
+sudo systemctl restart gunicorn-allminnesota
+echo "Deploy done."

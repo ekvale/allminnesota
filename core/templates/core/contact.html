@@ -1,0 +1,39 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Contact — All Minnesota{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="text-primary-green mb-4">Contact Us</h1>
+    <p class="lead text-dark mb-4">We'd love to hear from you.</p>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <form method="post" action="{% url 'core:contact' %}">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="id_name" class="form-label">Name</label>
+                    {{ form.name }}
+                    {% if form.name.errors %}<div class="invalid-feedback d-block">{{ form.name.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="mb-3">
+                    <label for="id_email" class="form-label">Email</label>
+                    {{ form.email }}
+                    {% if form.email.errors %}<div class="invalid-feedback d-block">{{ form.email.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="mb-3">
+                    <label for="id_subject" class="form-label">Subject</label>
+                    {{ form.subject }}
+                    {% if form.subject.errors %}<div class="invalid-feedback d-block">{{ form.subject.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="mb-3">
+                    <label for="id_message" class="form-label">Message</label>
+                    {{ form.message }}
+                    {% if form.message.errors %}<div class="invalid-feedback d-block">{{ form.message.errors.0 }}</div>{% endif %}
+                </div>
+                <button type="submit" class="btn btn-gold">Send Message</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

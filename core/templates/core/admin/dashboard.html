@@ -1,0 +1,136 @@
+{% extends 'core/base.html' %}
+{% load humanize %}
+
+{% block title %}Dashboard — All Minnesota{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="text-primary-green mb-4">Admin Dashboard</h1>
+
+    <!-- Summary cards -->
+    {% if goal %}
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="text-primary-green">Current Goal</h5>
+                    <p class="mb-0">{{ goal.goal_title }} — ${{ goal.current_amount|floatformat:0|intcomma }} / ${{ goal.target_amount|floatformat:0|intcomma }}</p>
+                    <a href="{% url 'core:goal_update' %}" class="btn btn-gold btn-sm mt-2">Update Goal</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="text-primary-green">Meals / Volunteers</h5>
+                    <p class="mb-0">{{ goal.meals_funded|intcomma }} meals — {{ goal.volunteers_count|intcomma }} volunteers</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="text-primary-green">Quick Links</h5>
+                    <a href="{% url 'core:event_create' %}" class="d-block">Create Event</a>
+                    <a href="{% url 'core:volunteer_list' %}" class="d-block">Volunteers</a>
+                    <a href="{% url 'core:contact_list' %}" class="d-block">Contacts</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="row">
+        <div class="col-lg-6 mb-4">
+            <h3 class="text-primary-green mb-3">Recent Volunteer Sign-Ups</h3>
+            <div class="table-responsive">
+                <table class="table table-sm table-striped">
+                    <thead>
+                        <tr><th>Name</th><th>Email</th><th>Region</th><th>Date</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for v in recent_volunteers %}
+                        <tr>
+                            <td>{{ v.first_name }} {{ v.last_name }}</td>
+                            <td>{{ v.email }}</td>
+                            <td>{{ v.get_region_display }}</td>
+                            <td>{{ v.submitted_at|date:"M j, Y" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="4" class="text-muted">No sign-ups yet.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <a href="{% url 'core:volunteer_list' %}" class="btn btn-outline-primary-green btn-sm">View All</a>
+        </div>
+        <div class="col-lg-6 mb-4">
+            <h3 class="text-primary-green mb-3">Recent Contact Messages</h3>
+            <div class="table-responsive">
+                <table class="table table-sm table-striped">
+                    <thead>
+                        <tr><th>Name</th><th>Subject</th><th>Date</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for c in recent_contacts %}
+                        <tr>
+                            <td>{{ c.name }}</td>
+                            <td>{{ c.subject|truncatewords:5 }}</td>
+                            <td>{{ c.submitted_at|date:"M j, Y" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="3" class="text-muted">No messages yet.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <a href="{% url 'core:contact_list' %}" class="btn btn-outline-primary-green btn-sm">View All</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12 mb-4">
+            <h3 class="text-primary-green mb-3">Events</h3>
+            <div class="table-responsive">
+                <table class="table table-sm table-striped">
+                    <thead>
+                        <tr><th>Title</th><th>Date</th><th>Venue</th><th>Published</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for event in events %}
+                        <tr>
+                            <td>{{ event.title }}</td>
+                            <td>{{ event.date|date:"M j, Y" }}</td>
+                            <td>{{ event.venue_name }}</td>
+                            <td>{% if event.is_published %}Yes{% else %}No{% endif %}</td>
+                            <td>
+                                <a href="{% url 'core:event_edit' event.pk %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+                                <a href="{% url 'core:event_delete' event.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="5" class="text-muted">No events.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <h3 class="text-primary-green mb-3">Last 5 Impact Updates</h3>
+            <ul class="list-group list-group-flush">
+                {% for u in recent_impact %}
+                <li class="list-group-item d-flex justify-content-between">
+                    <span>${{ u.amount_raised|floatformat:0 }} — {{ u.meals_funded }} meals — {{ u.volunteers }} volunteers</span>
+                    <small class="text-muted">{{ u.updated_at|date:"M j, Y" }} ({{ u.updated_by.get_full_name|default:u.updated_by.username }})</small>
+                </li>
+                {% empty %}
+                <li class="list-group-item text-muted">No impact updates yet.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

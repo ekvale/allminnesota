@@ -1,0 +1,46 @@
+{% extends 'core/base.html' %}
+
+{% block title %}About — All Minnesota{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="text-primary-green mb-5">About All Minnesota</h1>
+
+    <section class="mb-5">
+        <h2 class="h4 text-primary-green mb-3">The Story</h2>
+        <p class="text-dark">
+            All Minnesota exists to support indigenous-led community meal distribution across the state.
+            We believe everyone deserves access to nourishing food and that community meals build connection and dignity.
+            This work is rooted in partnership with Native chefs, tribal nations, and local volunteers who make it possible.
+        </p>
+    </section>
+
+    <section class="mb-5">
+        <h2 class="h4 text-primary-green mb-3">The Partnership</h2>
+        <p class="text-dark">
+            We work alongside Sean Sherman (The Sioux Chef) and the Indigenous Food Lab, along with tribal nations and community partners across Minnesota.
+            Together we fund and coordinate meal preparation and distribution so that more people can share in culturally rooted, nutritious meals.
+        </p>
+    </section>
+
+    <section class="mb-5">
+        <h2 class="h4 text-primary-green mb-3">The Team</h2>
+        <p class="text-dark">
+            Keith Secola and other key leaders bring decades of commitment to community and indigenous food sovereignty.
+            Our team and volunteers are the heart of All Minnesota — all in this together.
+        </p>
+    </section>
+
+    <section class="mb-5">
+        <h2 class="h4 text-primary-green mb-3">Our Commitment</h2>
+        <p class="text-dark">
+            We are committed to transparency, respect for tribal sovereignty, and building lasting relationships with the communities we serve.
+            Every dollar raised and every volunteer hour goes toward feeding and connecting our neighbors.
+        </p>
+    </section>
+
+    <p class="text-center">
+        <a href="{% url 'core:contact' %}" class="btn btn-gold">Get in Touch</a>
+    </p>
+</div>
+{% endblock %}

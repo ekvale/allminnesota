@@ -1,0 +1,55 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Volunteer — All Minnesota{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="text-primary-green mb-4">Sign Up to Volunteer</h1>
+    <p class="lead text-dark mb-4">Join our community and help distribute meals across Minnesota.</p>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <form method="post" action="{% url 'core:volunteer' %}" class="needs-validation" novalidate>
+                {% csrf_token %}
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="id_first_name" class="form-label">First name</label>
+                        {{ form.first_name }}
+                        {% if form.first_name.errors %}<div class="invalid-feedback d-block">{{ form.first_name.errors.0 }}</div>{% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        <label for="id_last_name" class="form-label">Last name</label>
+                        {{ form.last_name }}
+                        {% if form.last_name.errors %}<div class="invalid-feedback d-block">{{ form.last_name.errors.0 }}</div>{% endif %}
+                    </div>
+                    <div class="col-12">
+                        <label for="id_email" class="form-label">Email</label>
+                        {{ form.email }}
+                        {% if form.email.errors %}<div class="invalid-feedback d-block">{{ form.email.errors.0 }}</div>{% endif %}
+                    </div>
+                    <div class="col-12">
+                        <label for="id_phone" class="form-label">Phone (optional)</label>
+                        {{ form.phone }}
+                    </div>
+                    <div class="col-12">
+                        <label for="id_region" class="form-label">Region</label>
+                        {{ form.region }}
+                        {% if form.region.errors %}<div class="invalid-feedback d-block">{{ form.region.errors.0 }}</div>{% endif %}
+                    </div>
+                    <div class="col-12">
+                        <label for="id_availability" class="form-label">Availability</label>
+                        {{ form.availability }}
+                    </div>
+                    <div class="col-12">
+                        <label for="id_notes" class="form-label">Notes</label>
+                        {{ form.notes }}
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-gold">Submit</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends 'core/base.html' %}
+{% load humanize %}
+
+{% block title %}Impact — All Minnesota{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="text-primary-green mb-4">Our Impact</h1>
+
+    <!-- Three large stat boxes -->
+    {% if goal %}
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100 bg-primary-green text-white">
+                <div class="card-body text-center py-4">
+                    <h5 class="card-title">$ Raised</h5>
+                    <p class="fs-3 fw-bold mb-0">${{ goal.current_amount|floatformat:0|intcomma }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100 bg-light-green text-white">
+                <div class="card-body text-center py-4">
+                    <h5 class="card-title">Meals Funded</h5>
+                    <p class="fs-3 fw-bold mb-0">{{ goal.meals_funded|intcomma }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100 bg-gold text-dark">
+                <div class="card-body text-center py-4">
+                    <h5 class="card-title">Volunteers</h5>
+                    <p class="fs-3 fw-bold mb-0">{{ goal.volunteers_count|intcomma }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Progress bar toward goal -->
+    <div class="mb-5">
+        <h3 class="text-dark mb-3">Progress toward $50K goal</h3>
+        <div class="progress" style="height: 32px;">
+            <div class="progress-bar bg-gold" role="progressbar" style="width: {{ progress_percent }}%;" aria-valuenow="{{ progress_percent }}" aria-valuemin="0" aria-valuemax="100">{{ progress_percent }}%</div>
+        </div>
+        <p class="text-muted mt-2">${{ goal.current_amount|floatformat:0|intcomma }} of ${{ goal.target_amount|floatformat:0|intcomma }}</p>
+    </div>
+    {% endif %}
+
+    <!-- Timeline / update log: last 10 ImpactUpdate -->
+    <h3 class="text-primary-green mb-3">Impact Timeline</h3>
+    {% if impact_updates %}
+    <ul class="list-group list-group-flush">
+        {% for update in impact_updates %}
+        <li class="list-group-item d-flex justify-content-between align-items-start">
+            <div>
+                <strong>${{ update.amount_raised|floatformat:0 }}</strong> raised —
+                {{ update.meals_funded }} meals — {{ update.volunteers }} volunteers
+                {% if update.note %}<br><span class="text-muted small">{{ update.note }}</span>{% endif %}
+            </div>
+            <small class="text-muted">{{ update.updated_at|date:"M j, Y" }} by {{ update.updated_by.get_full_name|default:update.updated_by.username }}</small>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p class="text-muted">No impact updates yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

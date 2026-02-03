@@ -1,0 +1,6 @@
+# All Minnesota - Indigenous-led community meal distribution fundraising site
+Django>=5.0
+Pillow
+django-environ
+gunicorn
+psycopg2-binary

@@ -1,0 +1,35 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Update Goal — All Minnesota{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="text-primary-green mb-4">Update Fundraising Goal</h1>
+    <p class="text-muted mb-4">Updating these numbers will also create an Impact Update record.</p>
+
+    <div class="row">
+        <div class="col-lg-6">
+            <form method="post" action="">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="id_current_amount" class="form-label">Current amount ($)</label>
+                    {{ form.current_amount }}
+                    {% if form.current_amount.errors %}<div class="invalid-feedback d-block">{{ form.current_amount.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="mb-3">
+                    <label for="id_meals_funded" class="form-label">Meals funded</label>
+                    {{ form.meals_funded }}
+                    {% if form.meals_funded.errors %}<div class="invalid-feedback d-block">{{ form.meals_funded.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="mb-3">
+                    <label for="id_volunteers_count" class="form-label">Volunteers count</label>
+                    {{ form.volunteers_count }}
+                    {% if form.volunteers_count.errors %}<div class="invalid-feedback d-block">{{ form.volunteers_count.errors.0 }}</div>{% endif %}
+                </div>
+                <button type="submit" class="btn btn-gold">Save &amp; Create Impact Update</button>
+                <a href="{% url 'core:dashboard' %}" class="btn btn-outline-secondary ms-2">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
