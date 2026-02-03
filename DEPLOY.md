@@ -14,6 +14,14 @@ sudo systemctl restart gunicorn-allminnesota
 
 Or use the deploy script: `./deploy/deploy.sh` (from a user with sudo). See **§2** below for more options.
 
+**Optional (e.g. fresh setup):** Create staff users (Sean, Kuha, Emily) and seed Kanban tasks:
+
+```bash
+sudo -u allminnesota bash -c 'cd /var/www/allminnesota && source venv/bin/activate && python manage.py create_staff_users && python manage.py load_initial_tasks'
+```
+
+Staff default password: `allminnesota2025` — users should change it after first login.
+
 ---
 
 ## 1. On the server (Ubuntu/Debian)
