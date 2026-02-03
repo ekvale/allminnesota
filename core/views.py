@@ -133,7 +133,7 @@ class ContactView(FormView):
 # ---------------------------------------------------------------------------
 
 class AdminDashboardView(LoginRequiredMixin, TemplateView):
-    """Dashboard: summary cards, recent volunteers/contacts, events, impact updates."""
+    """Dashboard: summary cards, recent volunteers/contacts, events, impact updates, kanban board."""
     template_name = 'core/admin/dashboard.html'
     login_url = '/admin/login/'
 
@@ -144,7 +144,24 @@ class AdminDashboardView(LoginRequiredMixin, TemplateView):
         context['recent_contacts'] = ContactMessage.objects.all()[:10]
         context['events'] = Event.objects.all().order_by('-date')
         context['recent_impact'] = ImpactUpdate.objects.select_related('updated_by').order_by('-updated_at')[:5]
+        # Kanban board: tasks by status (for embedded board and move-from-dashboard)
+        tasks = Task.objects.select_related('assigned_to').all()
+        context['backlog'] = tasks.filter(status='backlog').order_by('-order', 'created_at')
+        context['to_do'] = tasks.filter(status='to_do').order_by('-order', 'created_at')
+        context['in_progress'] = tasks.filter(status='in_progress').order_by('-order', 'created_at')
+        context['done'] = tasks.filter(status='done').order_by('-order', 'created_at')
         return context
+
+    def post(self, request, *args, **kwargs):
+        """Handle task status move from embedded kanban; redirect back to dashboard."""
+        task_id = request.POST.get('task_id')
+        new_status = request.POST.get('status')
+        if task_id and new_status and new_status in dict(Task.STATUS_CHOICES):
+            task = get_object_or_404(Task, pk=task_id)
+            task.status = new_status
+            task.save()
+            messages.success(request, f'Task moved to {dict(Task.STATUS_CHOICES).get(new_status)}.')
+        return redirect('core:dashboard')
 
 
 class GoalUpdateView(LoginRequiredMixin, UpdateView):

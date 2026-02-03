@@ -55,6 +55,77 @@
     </div>
     {% endif %}
 
+    <!-- Kanban board -->
+    <div class="row g-3 mb-4">
+        <div class="col-12 d-flex justify-content-between align-items-center">
+            <h3 class="text-primary-green mb-0">Task Board</h3>
+            <a href="{% url 'core:task_create' %}" class="btn btn-gold btn-sm">New Task</a>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-secondary text-white py-2">
+                    <strong>Backlog</strong>
+                    <span class="badge bg-dark ms-1">{{ backlog|length }}</span>
+                </div>
+                <div class="card-body p-2 kanban-column">
+                    {% for task in backlog %}
+                    {% include 'core/admin/_task_card.html' with task=task task_form_action=request.path %}
+                    {% empty %}
+                    <p class="small text-muted mb-0 p-2">No tasks</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-primary text-white py-2">
+                    <strong>To Do</strong>
+                    <span class="badge bg-dark ms-1">{{ to_do|length }}</span>
+                </div>
+                <div class="card-body p-2 kanban-column">
+                    {% for task in to_do %}
+                    {% include 'core/admin/_task_card.html' with task=task task_form_action=request.path %}
+                    {% empty %}
+                    <p class="small text-muted mb-0 p-2">No tasks</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header text-white py-2" style="background-color: #C49A2C;">
+                    <strong>In Progress</strong>
+                    <span class="badge bg-dark ms-1">{{ in_progress|length }}</span>
+                </div>
+                <div class="card-body p-2 kanban-column">
+                    {% for task in in_progress %}
+                    {% include 'core/admin/_task_card.html' with task=task task_form_action=request.path %}
+                    {% empty %}
+                    <p class="small text-muted mb-0 p-2">No tasks</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-success text-white py-2">
+                    <strong>Done</strong>
+                    <span class="badge bg-dark ms-1">{{ done|length }}</span>
+                </div>
+                <div class="card-body p-2 kanban-column">
+                    {% for task in done %}
+                    {% include 'core/admin/_task_card.html' with task=task task_form_action=request.path %}
+                    {% empty %}
+                    <p class="small text-muted mb-0 p-2">No tasks</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="col-12">
+            <a href="{% url 'core:kanban' %}" class="btn btn-outline-secondary btn-sm">Full Kanban board →</a>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-lg-6 mb-4">
             <h3 class="text-primary-green mb-3">Recent Volunteer Sign-Ups</h3>
