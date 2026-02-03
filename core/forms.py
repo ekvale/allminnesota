@@ -95,8 +95,12 @@ class TaskForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['assigned_to'].queryset = VolunteerSignUp.objects.all().order_by('first_name', 'last_name')
+        qs = VolunteerSignUp.objects.all().order_by('first_name', 'last_name')
+        self.fields['assigned_to'].queryset = qs
         self.fields['assigned_to'].required = False
+        # Show volunteer name (not pk) in the dropdown
+        self.fields['assigned_to'].label_from_instance = lambda obj: f'{obj.first_name} {obj.last_name}'
+        self.fields['assigned_to'].empty_label = '— No one —'
 
 
 class TaskStatusForm(forms.Form):
