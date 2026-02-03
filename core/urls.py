@@ -26,4 +26,9 @@ urlpatterns = [
     path('dashboard/events/<int:pk>/delete/', views.EventDeleteView.as_view(), name='event_delete'),
     path('dashboard/volunteers/', views.VolunteerListView.as_view(), name='volunteer_list'),
     path('dashboard/contacts/', views.ContactListView.as_view(), name='contact_list'),
+    # Tasks & Kanban
+    path('dashboard/tasks/', views.KanbanBoardView.as_view(), name='kanban'),
+    path('dashboard/tasks/create/', views.TaskCreateView.as_view(), name='task_create'),
+    path('dashboard/tasks/<int:pk>/edit/', views.TaskUpdateView.as_view(), name='task_edit'),
+    path('dashboard/tasks/<int:pk>/delete/', views.TaskDeleteView.as_view(), name='task_delete'),
 ]

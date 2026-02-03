@@ -3,7 +3,7 @@ Forms for All Minnesota: volunteer sign-up, contact, goal update, and events.
 """
 
 from django import forms
-from .models import VolunteerSignUp, ContactMessage, FundraisingGoal, Event
+from .models import VolunteerSignUp, ContactMessage, FundraisingGoal, Event, Task
 
 
 class VolunteerForm(forms.ModelForm):
@@ -77,3 +77,28 @@ class EventForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         # Accept HTML datetime-local format (no seconds)
         self.fields['date'].input_formats = ['%Y-%m-%dT%H:%M', '%Y-%m-%d %H:%M', '%Y-%m-%d %H:%M:%S', '%Y-%m-%d']
+
+
+class TaskForm(forms.ModelForm):
+    """ModelForm for Task (create/edit)."""
+    class Meta:
+        model = Task
+        fields = ['title', 'description', 'status', 'assigned_to', 'due_date', 'order']
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'status': forms.Select(attrs={'class': 'form-select'}),
+            'assigned_to': forms.Select(attrs={'class': 'form-select'}),
+            'due_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'order': forms.NumberInput(attrs={'class': 'form-control'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['assigned_to'].queryset = VolunteerSignUp.objects.all().order_by('first_name', 'last_name')
+        self.fields['assigned_to'].required = False
+
+
+class TaskStatusForm(forms.Form):
+    """Quick-move form for kanban: change task status only."""
+    status = forms.ChoiceField(choices=Task.STATUS_CHOICES, widget=forms.Select(attrs={'class': 'form-select form-select-sm'}))

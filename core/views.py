@@ -12,8 +12,8 @@ from django.urls import reverse_lazy, reverse
 from django.utils import timezone
 from django.db.models import Q
 
-from .models import FundraisingGoal, Event, VolunteerSignUp, ContactMessage, ImpactUpdate
-from .forms import VolunteerForm, ContactForm, GoalUpdateForm, EventForm
+from .models import FundraisingGoal, Event, VolunteerSignUp, ContactMessage, ImpactUpdate, Task
+from .forms import VolunteerForm, ContactForm, GoalUpdateForm, EventForm, TaskForm
 
 
 # ---------------------------------------------------------------------------
@@ -245,3 +245,74 @@ class ContactListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return ContactMessage.objects.all().order_by('-submitted_at')
+
+
+# ---------------------------------------------------------------------------
+# TASKS & KANBAN (LoginRequiredMixin)
+# ---------------------------------------------------------------------------
+
+class KanbanBoardView(LoginRequiredMixin, TemplateView):
+    """Kanban board: columns Backlog, To Do, In Progress, Done; tasks as cards."""
+    template_name = 'core/admin/kanban.html'
+    login_url = '/admin/login/'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        tasks = Task.objects.select_related('assigned_to').all()
+        context['backlog'] = tasks.filter(status='backlog').order_by('-order', 'created_at')
+        context['to_do'] = tasks.filter(status='to_do').order_by('-order', 'created_at')
+        context['in_progress'] = tasks.filter(status='in_progress').order_by('-order', 'created_at')
+        context['done'] = tasks.filter(status='done').order_by('-order', 'created_at')
+        return context
+
+    def post(self, request, *args, **kwargs):
+        """Quick-move: update task status and redirect back to kanban."""
+        task_id = request.POST.get('task_id')
+        new_status = request.POST.get('status')
+        if task_id and new_status and new_status in dict(Task.STATUS_CHOICES):
+            task = get_object_or_404(Task, pk=task_id)
+            task.status = new_status
+            task.save()
+            messages.success(request, f'Task moved to {dict(Task.STATUS_CHOICES).get(new_status)}.')
+        return redirect('core:kanban')
+
+
+class TaskCreateView(LoginRequiredMixin, CreateView):
+    """Create a new task."""
+    model = Task
+    form_class = TaskForm
+    template_name = 'core/admin/task_form.html'
+    success_url = reverse_lazy('core:kanban')
+    login_url = '/admin/login/'
+
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user
+        messages.success(self.request, 'Task created.')
+        return super().form_valid(form)
+
+
+class TaskUpdateView(LoginRequiredMixin, UpdateView):
+    """Edit task (assign volunteer, change status, etc.)."""
+    model = Task
+    form_class = TaskForm
+    template_name = 'core/admin/task_form.html'
+    success_url = reverse_lazy('core:kanban')
+    login_url = '/admin/login/'
+    context_object_name = 'task'
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Task updated.')
+        return super().form_valid(form)
+
+
+class TaskDeleteView(LoginRequiredMixin, DeleteView):
+    """Confirm and delete task."""
+    model = Task
+    template_name = 'core/admin/task_confirm_delete.html'
+    success_url = reverse_lazy('core:kanban')
+    login_url = '/admin/login/'
+    context_object_name = 'task'
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Task deleted.')
+        return super().form_valid(form)

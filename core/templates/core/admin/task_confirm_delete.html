@@ -1,0 +1,15 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Delete Task — All Minnesota{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="text-primary-green mb-4">Delete Task</h1>
+    <p class="lead">Are you sure you want to delete <strong>{{ task.title }}</strong>?</p>
+    <form method="post" action="">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Yes, delete</button>
+        <a href="{% url 'core:kanban' %}" class="btn btn-outline-secondary ms-2">Cancel</a>
+    </form>
+</div>
+{% endblock %}

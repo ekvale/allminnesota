@@ -165,6 +165,15 @@ body {
   transition: opacity 0.2s ease;
 }
 
+/* Kanban board */
+.kanban-column {
+  min-height: 200px;
+}
+
+.task-card .card-body {
+  font-size: 0.9rem;
+}
+
 /* Alerts: map success to our green for consistency */
 .alert-success {
   background-color: rgba(30, 94, 59, 0.1);

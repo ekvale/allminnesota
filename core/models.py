@@ -321,3 +321,42 @@ class PartnerContact(models.Model):
 
     def __str__(self):
         return f'{self.name} — {self.partner.name}'
+
+
+class Task(models.Model):
+    """Task for volunteers; used on kanban board (Backlog, To Do, In Progress, Done)."""
+    STATUS_CHOICES = [
+        ('backlog', 'Backlog'),
+        ('to_do', 'To Do'),
+        ('in_progress', 'In Progress'),
+        ('done', 'Done'),
+    ]
+    title = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='to_do')
+    assigned_to = models.ForeignKey(
+        VolunteerSignUp,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='tasks',
+    )
+    due_date = models.DateField(null=True, blank=True)
+    order = models.PositiveIntegerField(default=0, help_text='Order within column (higher = lower on board)')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='tasks_created',
+    )
+
+    class Meta:
+        ordering = ['-order', 'created_at']
+        verbose_name = 'Task'
+        verbose_name_plural = 'Tasks'
+
+    def __str__(self):
+        return self.title

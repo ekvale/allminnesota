@@ -1,0 +1,44 @@
+{% extends 'core/base.html' %}
+
+{% block title %}{% if object %}Edit Task{% else %}New Task{% endif %} — All Minnesota{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="text-primary-green mb-4">{% if object %}Edit Task{% else %}New Task{% endif %}</h1>
+
+    <form method="post" action="">
+        {% csrf_token %}
+        <div class="row g-3">
+            <div class="col-12">
+                <label for="id_title" class="form-label">Title</label>
+                {{ form.title }}
+                {% if form.title.errors %}<div class="invalid-feedback d-block">{{ form.title.errors.0 }}</div>{% endif %}
+            </div>
+            <div class="col-12">
+                <label for="id_description" class="form-label">Description</label>
+                {{ form.description }}
+            </div>
+            <div class="col-md-6">
+                <label for="id_status" class="form-label">Status</label>
+                {{ form.status }}
+            </div>
+            <div class="col-md-6">
+                <label for="id_assigned_to" class="form-label">Assign to volunteer</label>
+                {{ form.assigned_to }}
+            </div>
+            <div class="col-md-6">
+                <label for="id_due_date" class="form-label">Due date</label>
+                {{ form.due_date }}
+            </div>
+            <div class="col-md-6">
+                <label for="id_order" class="form-label">Order (higher = higher in column)</label>
+                {{ form.order }}
+            </div>
+            <div class="col-12">
+                <button type="submit" class="btn btn-gold">{% if object %}Update{% else %}Create{% endif %} Task</button>
+                <a href="{% url 'core:kanban' %}" class="btn btn-outline-secondary ms-2">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -16,6 +16,7 @@ from .models import (
     MealKitDistribution,
     PartnerOrganization,
     PartnerContact,
+    Task,
 )
 
 
@@ -121,3 +122,12 @@ class PartnerContactAdmin(admin.ModelAdmin):
     list_filter = ['is_primary']
     search_fields = ['name', 'email']
     raw_id_fields = ['partner']
+
+
+@admin.register(Task)
+class TaskAdmin(admin.ModelAdmin):
+    list_display = ['title', 'status', 'assigned_to', 'due_date', 'order', 'updated_at']
+    list_filter = ['status']
+    search_fields = ['title', 'description']
+    raw_id_fields = ['assigned_to', 'created_by']
+    date_hierarchy = 'due_date'
