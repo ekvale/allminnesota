@@ -1,6 +1,7 @@
-<div class="card mb-2 task-card border shadow-sm">
+<div class="card mb-2 task-card border shadow-sm" data-task-id="{{ task.pk }}">
     <div class="card-body p-3">
-        <h6 class="card-title mb-1">
+        <span class="task-card-drag-handle text-muted me-1 cursor-grab" title="Drag to move column"><i class="fas fa-grip-vertical"></i></span>
+        <h6 class="card-title mb-1 d-inline">
             <a href="{% url 'core:task_edit' task.pk %}" class="text-dark text-decoration-none">{{ task.title }}</a>
         </h6>
         <p class="small text-muted mb-1">

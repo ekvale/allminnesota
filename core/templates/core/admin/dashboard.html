@@ -1,5 +1,5 @@
 {% extends 'core/base.html' %}
-{% load humanize %}
+{% load humanize static %}
 
 {% block title %}Dashboard — All Minnesota{% endblock %}
 
@@ -56,7 +56,7 @@
     {% endif %}
 
     <!-- Kanban board -->
-    <div class="row g-3 mb-4">
+    <div class="row g-3 mb-4 kanban-board">
         <div class="col-12 d-flex justify-content-between align-items-center">
             <h3 class="text-primary-green mb-0">Task Board</h3>
             <a href="{% url 'core:task_create' %}" class="btn btn-gold btn-sm">New Task</a>
@@ -67,7 +67,7 @@
                     <strong>Backlog</strong>
                     <span class="badge bg-dark ms-1">{{ backlog|length }}</span>
                 </div>
-                <div class="card-body p-2 kanban-column">
+                <div class="card-body p-2 kanban-column" data-status="backlog">
                     {% for task in backlog %}
                     {% include 'core/admin/_task_card.html' with task=task task_form_action=request.path %}
                     {% empty %}
@@ -82,7 +82,7 @@
                     <strong>To Do</strong>
                     <span class="badge bg-dark ms-1">{{ to_do|length }}</span>
                 </div>
-                <div class="card-body p-2 kanban-column">
+                <div class="card-body p-2 kanban-column" data-status="to_do">
                     {% for task in to_do %}
                     {% include 'core/admin/_task_card.html' with task=task task_form_action=request.path %}
                     {% empty %}
@@ -97,7 +97,7 @@
                     <strong>In Progress</strong>
                     <span class="badge bg-dark ms-1">{{ in_progress|length }}</span>
                 </div>
-                <div class="card-body p-2 kanban-column">
+                <div class="card-body p-2 kanban-column" data-status="in_progress">
                     {% for task in in_progress %}
                     {% include 'core/admin/_task_card.html' with task=task task_form_action=request.path %}
                     {% empty %}
@@ -112,7 +112,7 @@
                     <strong>Done</strong>
                     <span class="badge bg-dark ms-1">{{ done|length }}</span>
                 </div>
-                <div class="card-body p-2 kanban-column">
+                <div class="card-body p-2 kanban-column" data-status="done">
                     {% for task in done %}
                     {% include 'core/admin/_task_card.html' with task=task task_form_action=request.path %}
                     {% empty %}
@@ -219,4 +219,9 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+<script src="{% static 'core/kanban-dnd.js' %}"></script>
 {% endblock %}
