@@ -1,14 +1,14 @@
 # Systemd unit for All Minnesota (Gunicorn)
 # Place in /etc/systemd/system/gunicorn-allminnesota.service
-# Edit User and WorkingDirectory if your app lives elsewhere.
+# Runs as user 'allminnesota' (non-root). Create with: sudo useradd -m -s /bin/bash allminnesota
 
 [Unit]
 Description=Gunicorn for All Minnesota Django app
 After=network.target
 
 [Service]
-User=www-data
-Group=www-data
+User=allminnesota
+Group=allminnesota
 WorkingDirectory=/var/www/allminnesota
 Environment="PATH=/var/www/allminnesota/venv/bin"
 ExecStart=/var/www/allminnesota/venv/bin/gunicorn \

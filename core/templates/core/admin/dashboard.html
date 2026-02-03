@@ -33,7 +33,21 @@
                     <h5 class="text-primary-green">Quick Links</h5>
                     <a href="{% url 'core:event_create' %}" class="d-block">Create Event</a>
                     <a href="{% url 'core:volunteer_list' %}" class="d-block">Volunteers</a>
-                    <a href="{% url 'core:contact_list' %}" class="d-block">Contacts</a>
+                    <a href="{% url 'core:contact_list' %}" class="d-block">Contact Messages</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row g-3 mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="text-primary-green mb-2">Backend: Sites, Donations, Orders, Partners</h5>
+                    <a href="{% url 'admin:core_distributionsite_changelist' %}" class="me-3">Distribution Sites</a>
+                    <a href="{% url 'admin:core_donation_changelist' %}" class="me-3">Donations</a>
+                    <a href="{% url 'admin:core_foodorder_changelist' %}" class="me-3">Food Orders</a>
+                    <a href="{% url 'admin:core_mealkitdistribution_changelist' %}" class="me-3">Meal Kit Distributions</a>
+                    <a href="{% url 'admin:core_partnerorganization_changelist' %}">Partner Organizations</a>
                 </div>
             </div>
         </div>

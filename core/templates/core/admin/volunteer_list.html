@@ -23,6 +23,8 @@
                     <th>Email</th>
                     <th>Phone</th>
                     <th>Region</th>
+                    <th>Site</th>
+                    <th>Status</th>
                     <th>Submitted</th>
                 </tr>
             </thead>
@@ -34,18 +36,20 @@
                     <td>{{ v.email }}</td>
                     <td>{{ v.phone|default:"—" }}</td>
                     <td>{{ v.get_region_display }}</td>
+                    <td>{% if v.site %}{{ v.site.name }}{% else %}—{% endif %}</td>
+                    <td>{{ v.get_status_display }}</td>
                     <td>{{ v.submitted_at|date:"M j, Y H:i" }}</td>
                 </tr>
                 {% if v.availability or v.notes %}
                 <tr class="table-light">
-                    <td colspan="6" class="small text-muted">
+                    <td colspan="8" class="small text-muted">
                         {% if v.availability %}Availability: {{ v.availability }}{% endif %}
                         {% if v.notes %} — Notes: {{ v.notes }}{% endif %}
                     </td>
                 </tr>
                 {% endif %}
                 {% empty %}
-                <tr><td colspan="6" class="text-muted">No volunteer sign-ups found.</td></tr>
+                <tr><td colspan="8" class="text-muted">No volunteer sign-ups found.</td></tr>
                 {% endfor %}
             </tbody>
         </table>
