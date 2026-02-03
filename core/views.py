@@ -149,7 +149,7 @@ class AdminDashboardView(LoginRequiredMixin, TemplateView):
         context['recent_impact'] = ImpactUpdate.objects.select_related('updated_by').order_by('-updated_at')[:5]
         # Kanban board: tasks by status (optional filter: my tasks only)
         tasks = Task.objects.select_related('assigned_to').all()
-        filter_mine = request.GET.get('mine') == '1'
+        filter_mine = self.request.GET.get('mine') == '1'
         if filter_mine:
             tasks = tasks.filter(assigned_to=request.user)
         context['filter_mine'] = filter_mine
@@ -312,7 +312,7 @@ class KanbanBoardView(LoginRequiredMixin, TemplateView):
         """Quick-move status or reassign; redirect back to kanban."""
         task_id = request.POST.get('task_id')
         redirect_url = reverse('core:kanban')
-        if request.GET.get('mine') == '1':
+        if self.request.GET.get('mine') == '1':
             redirect_url = redirect_url + '?mine=1'
         if 'assigned_to' in request.POST:
             task = get_object_or_404(Task, pk=task_id) if task_id else None
