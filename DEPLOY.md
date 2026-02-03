@@ -1,5 +1,21 @@
 # Deploy All Minnesota to 147.182.227.124
 
+## Quick: update the server after a git push
+
+SSH to the server, then run:
+
+```bash
+cd /var/www/allminnesota
+sudo -u allminnesota git pull
+sudo -u allminnesota bash -c 'cd /var/www/allminnesota && source venv/bin/activate && pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --noinput'
+sudo chmod -R o+rX /var/www/allminnesota/staticfiles /var/www/allminnesota/media 2>/dev/null || true
+sudo systemctl restart gunicorn-allminnesota
+```
+
+Or use the deploy script: `./deploy/deploy.sh` (from a user with sudo). See **§2** below for more options.
+
+---
+
 ## 1. On the server (Ubuntu/Debian)
 
 **Goal:** Run the app as a dedicated non-root user (`allminnesota`), not as root.
