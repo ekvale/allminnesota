@@ -3,15 +3,14 @@
         <h6 class="card-title mb-1">
             <a href="{% url 'core:task_edit' task.pk %}" class="text-dark text-decoration-none">{{ task.title }}</a>
         </h6>
-        {% if task.assigned_to %}
         <p class="small text-muted mb-1">
-            <i class="fas fa-user me-1"></i>{{ task.assigned_to.first_name }} {{ task.assigned_to.last_name }}
+            <i class="fas fa-user me-1"></i><strong>Assigned to:</strong>
+            {% if task.assigned_to %}{{ task.assigned_to.first_name }} {{ task.assigned_to.last_name }}{% else %}— No one —{% endif %}
         </p>
-        {% endif %}
         {% if task.due_date %}
         <p class="small text-muted mb-2"><i class="fas fa-calendar me-1"></i>{{ task.due_date|date:"M j, Y" }}</p>
         {% endif %}
-        <form method="post" action="{% if task_form_action %}{{ task_form_action }}{% else %}{% url 'core:kanban' %}{% endif %}" class="d-flex align-items-center gap-1">
+        <form method="post" action="{% if task_form_action %}{{ task_form_action }}{% else %}{% url 'core:kanban' %}{% endif %}" class="d-flex align-items-center gap-1 mb-2">
             {% csrf_token %}
             <input type="hidden" name="task_id" value="{{ task.pk }}">
             <select name="status" class="form-select form-select-sm" style="width: auto;">
@@ -21,6 +20,18 @@
                 <option value="done" {% if task.status == 'done' %}selected{% endif %}>Done</option>
             </select>
             <button type="submit" class="btn btn-sm btn-outline-secondary">Move</button>
+        </form>
+        <form method="post" action="{% if task_form_action %}{{ task_form_action }}{% else %}{% url 'core:kanban' %}{% endif %}" class="d-flex align-items-center gap-1 flex-wrap">
+            {% csrf_token %}
+            <input type="hidden" name="task_id" value="{{ task.pk }}">
+            <label class="small text-muted mb-0 me-1">Reassign:</label>
+            <select name="assigned_to" class="form-select form-select-sm" style="width: auto; min-width: 120px;">
+                <option value="">— No one —</option>
+                {% for v in volunteers %}
+                <option value="{{ v.pk }}" {% if task.assigned_to_id == v.pk %}selected{% endif %}>{{ v.first_name }} {{ v.last_name }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-sm btn-outline-secondary">Reassign</button>
         </form>
         <a href="{% url 'core:task_delete' task.pk %}" class="small text-danger mt-1 d-block">Delete</a>
     </div>

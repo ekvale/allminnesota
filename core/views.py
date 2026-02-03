@@ -150,17 +150,27 @@ class AdminDashboardView(LoginRequiredMixin, TemplateView):
         context['to_do'] = tasks.filter(status='to_do').order_by('-order', 'created_at')
         context['in_progress'] = tasks.filter(status='in_progress').order_by('-order', 'created_at')
         context['done'] = tasks.filter(status='done').order_by('-order', 'created_at')
+        context['volunteers'] = VolunteerSignUp.objects.all().order_by('first_name', 'last_name')
         return context
 
     def post(self, request, *args, **kwargs):
-        """Handle task status move from embedded kanban; redirect back to dashboard."""
+        """Handle task status move or reassign from embedded kanban; redirect back to dashboard."""
         task_id = request.POST.get('task_id')
-        new_status = request.POST.get('status')
-        if task_id and new_status and new_status in dict(Task.STATUS_CHOICES):
+        if 'assigned_to' in request.POST:
+            task = get_object_or_404(Task, pk=task_id) if task_id else None
+            if task:
+                val = request.POST.get('assigned_to', '').strip()
+                task.assigned_to_id = int(val) if val else None
+                task.save()
+                if task.assigned_to:
+                    messages.success(request, f'Task assigned to {task.assigned_to.first_name} {task.assigned_to.last_name}.')
+                else:
+                    messages.success(request, 'Task unassigned.')
+        elif task_id and request.POST.get('status') and request.POST.get('status') in dict(Task.STATUS_CHOICES):
             task = get_object_or_404(Task, pk=task_id)
-            task.status = new_status
+            task.status = request.POST.get('status')
             task.save()
-            messages.success(request, f'Task moved to {dict(Task.STATUS_CHOICES).get(new_status)}.')
+            messages.success(request, f'Task moved to {dict(Task.STATUS_CHOICES).get(task.status)}.')
         return redirect('core:dashboard')
 
 
@@ -280,17 +290,27 @@ class KanbanBoardView(LoginRequiredMixin, TemplateView):
         context['to_do'] = tasks.filter(status='to_do').order_by('-order', 'created_at')
         context['in_progress'] = tasks.filter(status='in_progress').order_by('-order', 'created_at')
         context['done'] = tasks.filter(status='done').order_by('-order', 'created_at')
+        context['volunteers'] = VolunteerSignUp.objects.all().order_by('first_name', 'last_name')
         return context
 
     def post(self, request, *args, **kwargs):
-        """Quick-move: update task status and redirect back to kanban."""
+        """Quick-move status or reassign; redirect back to kanban."""
         task_id = request.POST.get('task_id')
-        new_status = request.POST.get('status')
-        if task_id and new_status and new_status in dict(Task.STATUS_CHOICES):
+        if 'assigned_to' in request.POST:
+            task = get_object_or_404(Task, pk=task_id) if task_id else None
+            if task:
+                val = request.POST.get('assigned_to', '').strip()
+                task.assigned_to_id = int(val) if val else None
+                task.save()
+                if task.assigned_to:
+                    messages.success(request, f'Task assigned to {task.assigned_to.first_name} {task.assigned_to.last_name}.')
+                else:
+                    messages.success(request, 'Task unassigned.')
+        elif task_id and request.POST.get('status') and request.POST.get('status') in dict(Task.STATUS_CHOICES):
             task = get_object_or_404(Task, pk=task_id)
-            task.status = new_status
+            task.status = request.POST.get('status')
             task.save()
-            messages.success(request, f'Task moved to {dict(Task.STATUS_CHOICES).get(new_status)}.')
+            messages.success(request, f'Task moved to {dict(Task.STATUS_CHOICES).get(task.status)}.')
         return redirect('core:kanban')
 
 
