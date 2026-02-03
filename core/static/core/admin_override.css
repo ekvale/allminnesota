@@ -1,0 +1,53 @@
+/*
+  All Minnesota — Django admin branding
+  Primary green #1B5E3B, orange accent for Minnesota branding
+*/
+
+#header {
+  background: #1B5E3B !important;
+}
+
+#branding h1, #branding h1 a:link, #branding h1 a:visited {
+  color: #fff !important;
+}
+
+#branding h1 a:hover {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.admin-logo {
+  vertical-align: middle;
+  margin-right: 10px;
+  max-height: 40px;
+  width: auto;
+}
+
+.admin-brand-text {
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+#user-tools a:focus, #user-tools a:hover {
+  color: #C49A2C !important;
+}
+
+.module h2, .module caption {
+  background: #1B5E3B !important;
+}
+
+a:link, a:visited {
+  color: #1B5E3B;
+}
+
+a:focus, a:hover {
+  color: #2E7D4F;
+}
+
+.button, input[type=submit], input[type=button], .submit-row input {
+  background: #1B5E3B !important;
+}
+
+.button:active, input[type=submit]:active, input[type=button]:active,
+.button:hover, input[type=submit]:hover, input[type=button]:hover {
+  background: #2E7D4F !important;
+}

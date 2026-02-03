@@ -1,0 +1,18 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | All Minnesota Admin{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'core/admin_override.css' %}">
+{% endblock %}
+
+{% block branding %}
+<a href="{% url 'admin:index' %}">
+    <img src="{% static 'core/images/logo.png' %}" alt="All Minnesota" class="admin-logo" height="40" width="auto">
+    <span class="admin-brand-text">All Minnesota Administration</span>
+</a>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}

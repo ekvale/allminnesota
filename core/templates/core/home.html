@@ -1,12 +1,13 @@
 {% extends 'core/base.html' %}
-{% load humanize %}
+{% load static humanize %}
 
 {% block title %}All Minnesota — All in this together.{% endblock %}
 
 {% block content %}
-<!-- HERO: full-width dark green, headline, Donate button -->
+<!-- HERO: full-width dark green, logo, headline, Donate button -->
 <section class="hero-section py-5">
     <div class="container py-5 text-center text-white">
+        <img src="{% static 'core/images/logo.png' %}" alt="All Minnesota" class="hero-logo mb-4" height="120" width="auto">
         <h1 class="display-3 fw-bold mb-3">All Minnesota</h1>
         <p class="lead mb-4">All in this together.</p>
         <p class="hero-statement mb-4 mx-auto" style="max-width: 600px;">

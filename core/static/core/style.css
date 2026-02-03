@@ -32,6 +32,12 @@ body {
   color: #fff;
 }
 
+.navbar-logo {
+  max-height: 44px;
+  width: auto;
+  object-fit: contain;
+}
+
 /* Hero section: full-width dark green */
 .hero-section {
   background-color: var(--primary-green);
@@ -39,6 +45,13 @@ body {
 
 .hero-statement {
   color: rgba(255, 255, 255, 0.95);
+}
+
+.hero-logo {
+  filter: brightness(1.05);
+  max-width: 280px;
+  height: auto;
+  object-fit: contain;
 }
 
 /* Gold CTA buttons: gold bg, dark text, rounded */
