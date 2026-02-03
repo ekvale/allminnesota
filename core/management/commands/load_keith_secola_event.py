@@ -60,7 +60,7 @@ class Command(BaseCommand):
                     'Details and location to be announced.'
                 ),
                 'ticket_url': '',
-                'is_published': False,
+                'is_published': True,
             },
         )
         if created:
@@ -70,9 +70,12 @@ class Command(BaseCommand):
 
         if dest_image.exists() and not event.image:
             event.image = 'events/keith_secola.png'
-            event.save()
+            event.save(update_fields=['image'])
             self.stdout.write(self.style.SUCCESS('Attached Keith Secola portrait to event.'))
-        elif dest_image.exists() and event.image:
-            self.stdout.write('Event already has an image.')
 
-        self.stdout.write(self.style.SUCCESS('Done. Publish the event from the dashboard or admin when ready.'))
+        if not event.is_published:
+            event.is_published = True
+            event.save(update_fields=['is_published'])
+            self.stdout.write(self.style.SUCCESS('Published event so it appears on the Events page.'))
+
+        self.stdout.write(self.style.SUCCESS('Done.'))
