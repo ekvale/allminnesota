@@ -6,11 +6,16 @@
 {% block content %}
 <div class="container-fluid py-4">
     <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
-        <div class="d-flex align-items-center gap-2">
+        <div class="d-flex align-items-center gap-2 flex-wrap">
             <h1 class="text-primary-green mb-0">Task Board</h1>
-            <span class="text-muted small">Show:</span>
-            <a href="{% url 'core:kanban' %}" class="btn btn-sm {% if not filter_mine %}btn-outline-primary-green active{% else %}btn-outline-secondary{% endif %}">All</a>
-            <a href="{% url 'core:kanban' %}?mine=1" class="btn btn-sm {% if filter_mine %}btn-outline-primary-green active{% else %}btn-outline-secondary{% endif %}">My tasks</a>
+            <label class="text-muted small mb-0 align-middle">Filter by user:</label>
+            <select class="form-select form-select-sm" style="width: auto; min-width: 140px;" onchange="if (this.value) location.href='{% url 'core:kanban' %}?assigned_to='+this.value; else location.href='{% url 'core:kanban' %}';">
+                <option value="">All</option>
+                {% for u in staff_users %}
+                <option value="{{ u.pk }}" {% if filter_assigned_to_id == u.pk %}selected{% endif %}>{{ u.get_full_name|default:u.username }}</option>
+                {% endfor %}
+            </select>
+            {% if filter_user %}<span class="text-muted small">({{ filter_user.get_full_name|default:filter_user.username }})</span>{% endif %}
         </div>
         <a href="{% url 'core:task_create' %}" class="btn btn-gold">New Task</a>
     </div>

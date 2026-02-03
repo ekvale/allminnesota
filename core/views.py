@@ -147,25 +147,36 @@ class AdminDashboardView(LoginRequiredMixin, TemplateView):
         context['recent_contacts'] = ContactMessage.objects.all()[:10]
         context['events'] = Event.objects.all().order_by('-date')
         context['recent_impact'] = ImpactUpdate.objects.select_related('updated_by').order_by('-updated_at')[:5]
-        # Kanban board: tasks by status (optional filter: my tasks only)
+        # Kanban board: tasks by status (optional filter by assigned user)
+        staff_users = User.objects.filter(is_staff=True).order_by('first_name', 'username')
         tasks = Task.objects.select_related('assigned_to').all()
-        filter_mine = self.request.GET.get('mine') == '1'
-        if filter_mine:
-            tasks = tasks.filter(assigned_to=request.user)
-        context['filter_mine'] = filter_mine
+        raw_id = self.request.GET.get('assigned_to', '').strip()
+        filter_assigned_to_id = None
+        filter_user = None
+        if raw_id:
+            try:
+                uid = int(raw_id)
+                if staff_users.filter(pk=uid).exists():
+                    tasks = tasks.filter(assigned_to_id=uid)
+                    filter_user = User.objects.get(pk=uid)
+                    filter_assigned_to_id = uid
+            except (ValueError, User.DoesNotExist):
+                pass
+        context['filter_assigned_to_id'] = filter_assigned_to_id
+        context['filter_user'] = filter_user
         context['backlog'] = tasks.filter(status='backlog').order_by('-order', 'created_at')
         context['to_do'] = tasks.filter(status='to_do').order_by('-order', 'created_at')
         context['in_progress'] = tasks.filter(status='in_progress').order_by('-order', 'created_at')
         context['done'] = tasks.filter(status='done').order_by('-order', 'created_at')
-        context['staff_users'] = User.objects.filter(is_staff=True).order_by('first_name', 'username')
+        context['staff_users'] = staff_users
         return context
 
     def post(self, request, *args, **kwargs):
         """Handle task status move or reassign from embedded kanban; redirect back to dashboard."""
         task_id = request.POST.get('task_id')
         redirect_url = reverse('core:dashboard')
-        if request.GET.get('mine') == '1':
-            redirect_url = redirect_url + '?mine=1'
+        if request.GET.get('assigned_to'):
+            redirect_url = redirect_url + '?assigned_to=' + request.GET.get('assigned_to', '')
         if 'assigned_to' in request.POST:
             task = get_object_or_404(Task, pk=task_id) if task_id else None
             if task:
@@ -296,24 +307,35 @@ class KanbanBoardView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        staff_users = User.objects.filter(is_staff=True).order_by('first_name', 'username')
         tasks = Task.objects.select_related('assigned_to').all()
-        filter_mine = self.request.GET.get('mine') == '1'
-        if filter_mine:
-            tasks = tasks.filter(assigned_to=self.request.user)
-        context['filter_mine'] = filter_mine
+        raw_id = self.request.GET.get('assigned_to', '').strip()
+        filter_assigned_to_id = None
+        filter_user = None
+        if raw_id:
+            try:
+                uid = int(raw_id)
+                if staff_users.filter(pk=uid).exists():
+                    tasks = tasks.filter(assigned_to_id=uid)
+                    filter_user = User.objects.get(pk=uid)
+                    filter_assigned_to_id = uid
+            except (ValueError, User.DoesNotExist):
+                pass
+        context['filter_assigned_to_id'] = filter_assigned_to_id
+        context['filter_user'] = filter_user
         context['backlog'] = tasks.filter(status='backlog').order_by('-order', 'created_at')
         context['to_do'] = tasks.filter(status='to_do').order_by('-order', 'created_at')
         context['in_progress'] = tasks.filter(status='in_progress').order_by('-order', 'created_at')
         context['done'] = tasks.filter(status='done').order_by('-order', 'created_at')
-        context['staff_users'] = User.objects.filter(is_staff=True).order_by('first_name', 'username')
+        context['staff_users'] = staff_users
         return context
 
     def post(self, request, *args, **kwargs):
         """Quick-move status or reassign; redirect back to kanban."""
         task_id = request.POST.get('task_id')
         redirect_url = reverse('core:kanban')
-        if self.request.GET.get('mine') == '1':
-            redirect_url = redirect_url + '?mine=1'
+        if request.GET.get('assigned_to'):
+            redirect_url = redirect_url + '?assigned_to=' + request.GET.get('assigned_to', '')
         if 'assigned_to' in request.POST:
             task = get_object_or_404(Task, pk=task_id) if task_id else None
             if task:
