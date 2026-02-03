@@ -107,7 +107,6 @@ class VolunteerView(FormView):
         form = VolunteerForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Thank you for signing up to volunteer! We\'ve received your information and will be in touch.')
             return redirect(reverse('core:volunteer') + '?submitted=1')
         return render(request, self.template_name, {'form': form})
 
@@ -125,8 +124,7 @@ class ContactView(FormView):
         form = ContactForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Thank you! Your message was sent.')
-            return redirect('core:contact')
+            return redirect(reverse('core:contact') + '?submitted=1')
         return render(request, self.template_name, {'form': form})
 
 
