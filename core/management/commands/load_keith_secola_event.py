@@ -48,25 +48,30 @@ class Command(BaseCommand):
         else:
             self.stdout.write(self.style.WARNING(f'Source image not found at {static_image}; event will have no image.'))
 
-        event, created = Event.objects.get_or_create(
-            title='Keith Secola',
-            defaults={
-                'date': event_date,
-                'venue_name': 'TBD',
-                'venue_address': 'TBD',
-                'city_state': 'TBD',
-                'description': (
+        title_final = 'Keith Secola: Benefit Concert'
+        event = Event.objects.filter(title__in=['Keith Secola', title_final]).first()
+        if not event:
+            event = Event.objects.create(
+                title=title_final,
+                date=event_date,
+                venue_name='TBD',
+                venue_address='TBD',
+                city_state='TBD',
+                description=(
                     'Join us for an evening with Keith Secola—musician, songwriter, and cultural voice. '
                     'Details and location to be announced.'
                 ),
-                'ticket_url': '',
-                'is_published': True,
-            },
-        )
-        if created:
+                ticket_url='',
+                is_published=True,
+            )
             self.stdout.write(self.style.SUCCESS(f'Created event: {event.title} on {event.date.date()}'))
         else:
-            self.stdout.write(f'Event already exists: {event.title}')
+            if event.title != title_final:
+                event.title = title_final
+                event.save(update_fields=['title'])
+                self.stdout.write(self.style.SUCCESS(f'Renamed event to {title_final}'))
+            else:
+                self.stdout.write(f'Event already exists: {event.title}')
 
         if dest_image.exists() and not event.image:
             event.image = 'events/keith_secola.png'
