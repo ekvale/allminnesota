@@ -12,8 +12,11 @@ from django.urls import reverse_lazy, reverse
 from django.utils import timezone
 from django.db.models import Q
 
+from django.contrib.auth import get_user_model
 from .models import FundraisingGoal, Event, VolunteerSignUp, ContactMessage, ImpactUpdate, Task
 from .forms import VolunteerForm, ContactForm, GoalUpdateForm, EventForm, TaskForm
+
+User = get_user_model()
 
 
 # ---------------------------------------------------------------------------
@@ -150,7 +153,7 @@ class AdminDashboardView(LoginRequiredMixin, TemplateView):
         context['to_do'] = tasks.filter(status='to_do').order_by('-order', 'created_at')
         context['in_progress'] = tasks.filter(status='in_progress').order_by('-order', 'created_at')
         context['done'] = tasks.filter(status='done').order_by('-order', 'created_at')
-        context['volunteers'] = VolunteerSignUp.objects.all().order_by('first_name', 'last_name')
+        context['staff_users'] = User.objects.filter(is_staff=True).order_by('first_name', 'username')
         return context
 
     def post(self, request, *args, **kwargs):
@@ -163,7 +166,8 @@ class AdminDashboardView(LoginRequiredMixin, TemplateView):
                 task.assigned_to_id = int(val) if val else None
                 task.save()
                 if task.assigned_to:
-                    messages.success(request, f'Task assigned to {task.assigned_to.first_name} {task.assigned_to.last_name}.')
+                    name = task.assigned_to.get_full_name() or task.assigned_to.username
+                    messages.success(request, f'Task assigned to {name}.')
                 else:
                     messages.success(request, 'Task unassigned.')
         elif task_id and request.POST.get('status') and request.POST.get('status') in dict(Task.STATUS_CHOICES):
@@ -290,7 +294,7 @@ class KanbanBoardView(LoginRequiredMixin, TemplateView):
         context['to_do'] = tasks.filter(status='to_do').order_by('-order', 'created_at')
         context['in_progress'] = tasks.filter(status='in_progress').order_by('-order', 'created_at')
         context['done'] = tasks.filter(status='done').order_by('-order', 'created_at')
-        context['volunteers'] = VolunteerSignUp.objects.all().order_by('first_name', 'last_name')
+        context['staff_users'] = User.objects.filter(is_staff=True).order_by('first_name', 'username')
         return context
 
     def post(self, request, *args, **kwargs):
@@ -303,7 +307,8 @@ class KanbanBoardView(LoginRequiredMixin, TemplateView):
                 task.assigned_to_id = int(val) if val else None
                 task.save()
                 if task.assigned_to:
-                    messages.success(request, f'Task assigned to {task.assigned_to.first_name} {task.assigned_to.last_name}.')
+                    name = task.assigned_to.get_full_name() or task.assigned_to.username
+                    messages.success(request, f'Task assigned to {name}.')
                 else:
                     messages.success(request, 'Task unassigned.')
         elif task_id and request.POST.get('status') and request.POST.get('status') in dict(Task.STATUS_CHOICES):

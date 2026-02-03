@@ -5,7 +5,7 @@
         </h6>
         <p class="small text-muted mb-1">
             <i class="fas fa-user me-1"></i><strong>Assigned to:</strong>
-            {% if task.assigned_to %}{{ task.assigned_to.first_name }} {{ task.assigned_to.last_name }}{% else %}— No one —{% endif %}
+            {% if task.assigned_to %}{{ task.assigned_to.get_full_name|default:task.assigned_to.username }}{% else %}— No one —{% endif %}
         </p>
         {% if task.due_date %}
         <p class="small text-muted mb-2"><i class="fas fa-calendar me-1"></i>{{ task.due_date|date:"M j, Y" }}</p>
@@ -27,8 +27,8 @@
             <label class="small text-muted mb-0 me-1">Reassign:</label>
             <select name="assigned_to" class="form-select form-select-sm" style="width: auto; min-width: 120px;">
                 <option value="">— No one —</option>
-                {% for v in volunteers %}
-                <option value="{{ v.pk }}" {% if task.assigned_to_id == v.pk %}selected{% endif %}>{{ v.first_name }} {{ v.last_name }}</option>
+                {% for u in staff_users %}
+                <option value="{{ u.pk }}" {% if task.assigned_to_id == u.pk %}selected{% endif %}>{{ u.get_full_name|default:u.username }}</option>
                 {% endfor %}
             </select>
             <button type="submit" class="btn btn-sm btn-outline-secondary">Reassign</button>

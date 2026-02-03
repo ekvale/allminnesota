@@ -324,7 +324,7 @@ class PartnerContact(models.Model):
 
 
 class Task(models.Model):
-    """Task for volunteers; used on kanban board (Backlog, To Do, In Progress, Done)."""
+    """Task for team; used on kanban board (Backlog, To Do, In Progress, Done). Assigned to staff users."""
     STATUS_CHOICES = [
         ('backlog', 'Backlog'),
         ('to_do', 'To Do'),
@@ -335,11 +335,11 @@ class Task(models.Model):
     description = models.TextField(blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='to_do')
     assigned_to = models.ForeignKey(
-        VolunteerSignUp,
+        settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='tasks',
+        related_name='assigned_tasks',
     )
     due_date = models.DateField(null=True, blank=True)
     order = models.PositiveIntegerField(default=0, help_text='Order within column (higher = lower on board)')

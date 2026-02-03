@@ -3,7 +3,10 @@ Forms for All Minnesota: volunteer sign-up, contact, goal update, and events.
 """
 
 from django import forms
+from django.contrib.auth import get_user_model
 from .models import VolunteerSignUp, ContactMessage, FundraisingGoal, Event, Task
+
+User = get_user_model()
 
 
 class VolunteerForm(forms.ModelForm):
@@ -95,11 +98,10 @@ class TaskForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        qs = VolunteerSignUp.objects.all().order_by('first_name', 'last_name')
+        qs = User.objects.filter(is_staff=True).order_by('first_name', 'username')
         self.fields['assigned_to'].queryset = qs
         self.fields['assigned_to'].required = False
-        # Show volunteer name (not pk) in the dropdown
-        self.fields['assigned_to'].label_from_instance = lambda obj: f'{obj.first_name} {obj.last_name}'
+        self.fields['assigned_to'].label_from_instance = lambda u: u.get_full_name() or u.username
         self.fields['assigned_to'].empty_label = '— No one —'
 
 
