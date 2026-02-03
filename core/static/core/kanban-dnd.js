@@ -1,6 +1,6 @@
 /**
  * Kanban drag-and-drop: move task cards between columns.
- * Requires Sortable.js to be loaded. Run after DOM ready.
+ * Call window.initKanbanDnd() after Sortable.js has loaded (e.g. from Sortable script onload).
  */
 (function () {
   function getCsrfToken() {
@@ -11,7 +11,7 @@
   function postMove(taskId, newStatus) {
     var form = document.createElement('form');
     form.method = 'POST';
-    form.action = window.location.pathname;
+    form.action = window.location.pathname + window.location.search;
     form.style.display = 'none';
 
     var csrf = document.createElement('input');
@@ -37,16 +37,18 @@
   }
 
   function initKanbanDnd() {
+    if (typeof Sortable === 'undefined') return;
     var columns = document.querySelectorAll('.kanban-column');
-    if (!columns.length || typeof Sortable === 'undefined') return;
+    if (!columns.length) return;
 
     columns.forEach(function (el) {
       new Sortable(el, {
         group: 'kanban-tasks',
         draggable: '.task-card',
-        handle: '.task-card-drag-handle',
         animation: 150,
-        ghostClass: 'opacity-50',
+        ghostClass: 'sortable-ghost',
+        filter: '.btn, a, input, select, textarea',
+        preventOnFilter: true,
         onEnd: function (evt) {
           var fromStatus = evt.from.dataset.status;
           var toStatus = evt.to.dataset.status;
@@ -58,8 +60,10 @@
     });
   }
 
+  window.initKanbanDnd = initKanbanDnd;
+  // With defer, Sortable loads first and we run after DOM; init now.
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initKanbanDnd);
+    document.addEventListener('DOMContentLoaded', function () { initKanbanDnd(); });
   } else {
     initKanbanDnd();
   }

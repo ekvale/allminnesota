@@ -174,19 +174,19 @@ body {
   font-size: 0.9rem;
 }
 
-/* Kanban drag handle and empty column drop zone */
-.task-card-drag-handle {
+/* Kanban drag-and-drop */
+.task-card {
   cursor: grab;
-  user-select: none;
 }
-.task-card-drag-handle:active {
+.task-card:active {
   cursor: grabbing;
 }
 .kanban-column {
   min-height: 100px;
 }
 .kanban-column .task-card.sortable-ghost {
-  opacity: 0.5;
+  opacity: 0.4;
+  cursor: grabbing;
 }
 
 /* Alerts: map success to our green for consistency */

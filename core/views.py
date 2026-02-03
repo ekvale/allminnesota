@@ -147,8 +147,12 @@ class AdminDashboardView(LoginRequiredMixin, TemplateView):
         context['recent_contacts'] = ContactMessage.objects.all()[:10]
         context['events'] = Event.objects.all().order_by('-date')
         context['recent_impact'] = ImpactUpdate.objects.select_related('updated_by').order_by('-updated_at')[:5]
-        # Kanban board: tasks by status (for embedded board and move-from-dashboard)
+        # Kanban board: tasks by status (optional filter: my tasks only)
         tasks = Task.objects.select_related('assigned_to').all()
+        filter_mine = request.GET.get('mine') == '1'
+        if filter_mine:
+            tasks = tasks.filter(assigned_to=request.user)
+        context['filter_mine'] = filter_mine
         context['backlog'] = tasks.filter(status='backlog').order_by('-order', 'created_at')
         context['to_do'] = tasks.filter(status='to_do').order_by('-order', 'created_at')
         context['in_progress'] = tasks.filter(status='in_progress').order_by('-order', 'created_at')
@@ -159,6 +163,9 @@ class AdminDashboardView(LoginRequiredMixin, TemplateView):
     def post(self, request, *args, **kwargs):
         """Handle task status move or reassign from embedded kanban; redirect back to dashboard."""
         task_id = request.POST.get('task_id')
+        redirect_url = reverse('core:dashboard')
+        if request.GET.get('mine') == '1':
+            redirect_url = redirect_url + '?mine=1'
         if 'assigned_to' in request.POST:
             task = get_object_or_404(Task, pk=task_id) if task_id else None
             if task:
@@ -175,7 +182,7 @@ class AdminDashboardView(LoginRequiredMixin, TemplateView):
             task.status = request.POST.get('status')
             task.save()
             messages.success(request, f'Task moved to {dict(Task.STATUS_CHOICES).get(task.status)}.')
-        return redirect('core:dashboard')
+        return redirect(redirect_url)
 
 
 class GoalUpdateView(LoginRequiredMixin, UpdateView):
@@ -290,6 +297,10 @@ class KanbanBoardView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         tasks = Task.objects.select_related('assigned_to').all()
+        filter_mine = self.request.GET.get('mine') == '1'
+        if filter_mine:
+            tasks = tasks.filter(assigned_to=self.request.user)
+        context['filter_mine'] = filter_mine
         context['backlog'] = tasks.filter(status='backlog').order_by('-order', 'created_at')
         context['to_do'] = tasks.filter(status='to_do').order_by('-order', 'created_at')
         context['in_progress'] = tasks.filter(status='in_progress').order_by('-order', 'created_at')
@@ -300,6 +311,9 @@ class KanbanBoardView(LoginRequiredMixin, TemplateView):
     def post(self, request, *args, **kwargs):
         """Quick-move status or reassign; redirect back to kanban."""
         task_id = request.POST.get('task_id')
+        redirect_url = reverse('core:kanban')
+        if request.GET.get('mine') == '1':
+            redirect_url = redirect_url + '?mine=1'
         if 'assigned_to' in request.POST:
             task = get_object_or_404(Task, pk=task_id) if task_id else None
             if task:
@@ -316,7 +330,7 @@ class KanbanBoardView(LoginRequiredMixin, TemplateView):
             task.status = request.POST.get('status')
             task.save()
             messages.success(request, f'Task moved to {dict(Task.STATUS_CHOICES).get(task.status)}.')
-        return redirect('core:kanban')
+        return redirect(redirect_url)
 
 
 class TaskCreateView(LoginRequiredMixin, CreateView):

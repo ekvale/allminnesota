@@ -5,8 +5,13 @@
 
 {% block content %}
 <div class="container-fluid py-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="text-primary-green mb-0">Task Board</h1>
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+        <div class="d-flex align-items-center gap-2">
+            <h1 class="text-primary-green mb-0">Task Board</h1>
+            <span class="text-muted small">Show:</span>
+            <a href="{% url 'core:kanban' %}" class="btn btn-sm {% if not filter_mine %}btn-outline-primary-green active{% else %}btn-outline-secondary{% endif %}">All</a>
+            <a href="{% url 'core:kanban' %}?mine=1" class="btn btn-sm {% if filter_mine %}btn-outline-primary-green active{% else %}btn-outline-secondary{% endif %}">My tasks</a>
+        </div>
         <a href="{% url 'core:task_create' %}" class="btn btn-gold">New Task</a>
     </div>
 
@@ -78,6 +83,6 @@
 {% endblock %}
 
 {% block extra_js %}
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
-<script src="{% static 'core/kanban-dnd.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js" defer></script>
+<script src="{% static 'core/kanban-dnd.js' %}" defer></script>
 {% endblock %}
