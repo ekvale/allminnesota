@@ -1,8 +1,10 @@
 /*
   All Minnesota — Django admin branding
-  Primary green #1B5E3B, orange accent for Minnesota branding
+  ADA-compliant contrast (WCAG AA) in light and dark mode.
+  Primary green #1B5E3B, light green #2E7D4F, gold #C49A2C.
 */
 
+/* ---------- Light mode (default): dark green on light backgrounds ---------- */
 #header {
   background: #1B5E3B !important;
 }
@@ -12,7 +14,7 @@
 }
 
 #branding h1 a:hover {
-  color: rgba(255, 255, 255, 0.9) !important;
+  color: rgba(255, 255, 255, 0.95) !important;
 }
 
 .admin-logo {
@@ -27,12 +29,21 @@
   font-size: 1.1rem;
 }
 
+#user-tools a:link, #user-tools a:visited {
+  color: #fff !important;
+}
+
 #user-tools a:focus, #user-tools a:hover {
   color: #C49A2C !important;
 }
 
 .module h2, .module caption {
   background: #1B5E3B !important;
+  color: #fff !important;
+}
+
+.module h2 a, .module caption a {
+  color: #fff !important;
 }
 
 a:link, a:visited {
@@ -45,9 +56,66 @@ a:focus, a:hover {
 
 .button, input[type=submit], input[type=button], .submit-row input {
   background: #1B5E3B !important;
+  color: #fff !important;
 }
 
 .button:active, input[type=submit]:active, input[type=button]:active,
 .button:hover, input[type=submit]:hover, input[type=button]:hover {
   background: #2E7D4F !important;
+  color: #fff !important;
+}
+
+
+/* ---------- Dark mode: light green on dark backgrounds (ADA contrast) ---------- */
+@media (prefers-color-scheme: dark) {
+  #header {
+    background: #1B5E3B !important;
+  }
+
+  #branding h1, #branding h1 a:link, #branding h1 a:visited {
+    color: #fff !important;
+  }
+
+  #branding h1 a:hover {
+    color: #E8F5EE !important;
+  }
+
+  #user-tools a:link, #user-tools a:visited {
+    color: #fff !important;
+  }
+
+  #user-tools a:focus, #user-tools a:hover {
+    color: #E8C547 !important;  /* lighter gold for contrast on dark */
+  }
+
+  /* Links in content: light green so readable on dark admin background */
+  #content a:link, #content a:visited,
+  .main a:link, .main a:visited {
+    color: #7DD4A0 !important;
+  }
+
+  #content a:focus, #content a:hover,
+  .main a:focus, .main a:hover {
+    color: #9EE8BD !important;
+  }
+
+  .module h2, .module caption {
+    background: #2E7D4F !important;
+    color: #fff !important;
+  }
+
+  .module h2 a, .module caption a {
+    color: #fff !important;
+  }
+
+  .button, input[type=submit], input[type=button], .submit-row input {
+    background: #2E7D4F !important;
+    color: #fff !important;
+  }
+
+  .button:active, input[type=submit]:active, input[type=button]:active,
+  .button:hover, input[type=submit]:hover, input[type=button]:hover {
+    background: #3D9B5E !important;
+    color: #fff !important;
+  }
 }
