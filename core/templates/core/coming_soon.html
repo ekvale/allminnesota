@@ -1,0 +1,20 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coming Soon — All Minnesota</title>
+    <link rel="icon" href="{% static 'core/images/logo.png' %}" type="image/png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'core/style.css' %}">
+</head>
+<body>
+    <div class="min-vh-100 d-flex flex-column align-items-center justify-content-center text-center px-3" style="background-color: var(--primary-green, #1B5E3B);">
+        <img src="{% static 'core/images/logo.png' %}" alt="All Minnesota" class="mb-4" height="80" width="auto">
+        <h1 class="text-white display-3 fw-bold mb-2">Coming Soon!</h1>
+        <p class="text-white fs-5 opacity-90 mb-4">We're building something great. Check back soon.</p>
+        <a href="{% url 'admin:login' %}" class="btn btn-gold">Staff Login</a>
+    </div>
+</body>
+</html>
